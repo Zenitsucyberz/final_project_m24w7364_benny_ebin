@@ -4,12 +4,14 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
+// Define the Meal interface for the data structure
 interface Meal {
   id: number;
   name: string;
   calories: number;
 }
 
+// Initial list of meals to display in the table
 const initialMeals: Meal[] = [
   { id: 1, name: 'Chicken Salad', calories: 350 },
   { id: 2, name: 'Beef Steak', calories: 700 },
@@ -17,7 +19,9 @@ const initialMeals: Meal[] = [
   { id: 4, name: 'Fruit Smoothie', calories: 250 },
 ];
 
+// Form component to allow users to add new meals
 const MealForm: React.FC<{ onAddMeal: (meal: Omit<Meal, 'id'>) => void }> = ({ onAddMeal }) => {
+  // Formik setup with initial values and Yup validation
   const formik = useFormik({
     initialValues: { name: '', calories: '' },
     validationSchema: Yup.object({
@@ -28,6 +32,7 @@ const MealForm: React.FC<{ onAddMeal: (meal: Omit<Meal, 'id'>) => void }> = ({ o
         .typeError('Calories must be a number'),
     }),
     onSubmit: (values, { resetForm }) => {
+      // Call parent callback to add meal, then reset form
       onAddMeal({ name: values.name.trim(), calories: Number(values.calories) });
       resetForm();
     },
@@ -40,6 +45,7 @@ const MealForm: React.FC<{ onAddMeal: (meal: Omit<Meal, 'id'>) => void }> = ({ o
     >
       <h2 className="text-2xl font-semibold mb-6 text-center">Add a New Meal</h2>
 
+      {/* Meal Name Field */}
       <div className="mb-5">
         <label htmlFor="name" className="block mb-1 font-medium text-gray-700">
           Meal Name
@@ -63,6 +69,7 @@ const MealForm: React.FC<{ onAddMeal: (meal: Omit<Meal, 'id'>) => void }> = ({ o
         )}
       </div>
 
+      {/* Calories Field */}
       <div className="mb-6">
         <label htmlFor="calories" className="block mb-1 font-medium text-gray-700">
           Calories
@@ -87,6 +94,7 @@ const MealForm: React.FC<{ onAddMeal: (meal: Omit<Meal, 'id'>) => void }> = ({ o
         )}
       </div>
 
+      {/* Submit Button */}
       <button
         type="submit"
         className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
@@ -97,9 +105,12 @@ const MealForm: React.FC<{ onAddMeal: (meal: Omit<Meal, 'id'>) => void }> = ({ o
   );
 };
 
+// Main Table Page component
 const TablePage: React.FC = () => {
+  // State to hold list of meals
   const [meals, setMeals] = useState<Meal[]>(initialMeals);
 
+  // Function to add a new meal to the table
   const addMeal = (meal: Omit<Meal, 'id'>) => {
     setMeals((prev) => [
       ...prev,
@@ -107,12 +118,14 @@ const TablePage: React.FC = () => {
     ]);
   };
 
+  // Define columns for TanStack Table
   const columns: ColumnDef<Meal>[] = [
     { accessorKey: 'id', header: 'ID' },
     { accessorKey: 'name', header: 'Meal Name' },
     { accessorKey: 'calories', header: 'Calories' },
   ];
 
+  // Create the table instance
   const table = useReactTable({
     data: meals,
     columns,
@@ -122,10 +135,10 @@ const TablePage: React.FC = () => {
   return (
     <div className="min-h-screen flex justify-center items-start bg-gray-50 p-8">
       <div className="flex flex-col md:flex-row gap-10 max-w-7xl w-full justify-center">
-        {/* Form card */}
+        {/* Render the meal form on the left */}
         <MealForm onAddMeal={addMeal} />
 
-        {/* Table without wrapper */}
+        {/* Render the table on the right */}
         <table className="min-w-[600px] border-collapse border border-gray-300 rounded-lg shadow-md bg-white">
           <thead className="bg-blue-100 sticky top-0">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -135,6 +148,7 @@ const TablePage: React.FC = () => {
                     key={header.id}
                     className="border border-gray-300 p-3 text-left font-semibold text-blue-900"
                   >
+                    {/* Render the header content */}
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
                 ))}
@@ -143,6 +157,7 @@ const TablePage: React.FC = () => {
           </thead>
 
           <tbody>
+            {/* Show message if no meals available */}
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="text-center p-6 text-gray-500">
@@ -150,6 +165,7 @@ const TablePage: React.FC = () => {
                 </td>
               </tr>
             ) : (
+              // Render table rows with data
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
@@ -160,6 +176,7 @@ const TablePage: React.FC = () => {
                       key={cell.id}
                       className="border border-gray-300 p-3 text-gray-800"
                     >
+                      {/* Render cell content */}
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}
