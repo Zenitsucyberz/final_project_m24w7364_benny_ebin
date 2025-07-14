@@ -50,12 +50,15 @@ src/
 
 1. Clone the repo
 
-git clone <your-repo-url>
+git clone https://github.com/Zenitsucyberz/final_project_m24w7364_benny_ebin.git
 cd final_project_m24w7364_benny_ebin
 
 2. Install dependencies
 
 npm install
+
+# Or manually install dependencies if needed
+npm install formik yup axios @tanstack/react-table react-router-dom
 
 3. Run the app locally
 
@@ -81,7 +84,6 @@ zip -r final_project_M24W7364.zip . -x "node_modules/*"
 
 Ebin Benny
 Student ID: M24W7364
-Built with ❤️ in Japan 🇯🇵
 
 🔗 API Reference
 
